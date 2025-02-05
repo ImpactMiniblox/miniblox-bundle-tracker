@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "simple-git": "npm:simple-git@^3.27.0"
+  }
+}
