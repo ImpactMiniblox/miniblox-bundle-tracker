@@ -1,6 +1,10 @@
 // Downloads the latest Miniblox bundle from the website.
 // Boring and I basically just pressed TAB to the AI completions because I don't care.
 
+import init, { format } from "@fmt/biome-fmt";
+
+await init();
+
 export default async function getBundle() {
 	const page = await fetch("https://miniblox.io/");
 	const text = await page.text();
@@ -17,7 +21,11 @@ export default async function getBundle() {
 	// Download the latest bundle.
 	const bundle = await fetch(`https://miniblox.io/assets/index-${latestBundle}.js`);
 	const bundleText = await bundle.text();
-	return [bundleText, latestBundle];
+	console.info("Downloaded bundle! Formatting... (may take a while)");
+	console.time("Formatting");
+	const formattedText = format(bundleText, "bundle.js");
+	console.timeEnd("Formatting");
+	return [formattedText, latestBundle];
 }
 
 if (import.meta.main) {
