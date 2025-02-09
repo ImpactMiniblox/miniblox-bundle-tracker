@@ -2,8 +2,11 @@ name: Update bundle
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "5 * * * *"
   workflow_dispatch:
+  push:
+    paths-ignore:
+        - bundle.js
 
 jobs:
   update:
