@@ -1,0 +1,24 @@
+name: Update bundle
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deno-version: [vx.x.x, rc, canary]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+      - uses: denoland/setup-deno@v2
+        with:
+            deno-version: ${{ matrix.deno-version }}
+      - run: deno run --allow-net main.ts
+      - uses: actions-js/push@master
+        with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
