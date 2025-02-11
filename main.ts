@@ -3,6 +3,8 @@
 
 import init, { format } from "@fmt/biome-fmt";
 
+const startDate = new Date();
+
 await init();
 
 export default async function getBundle() {
@@ -32,8 +34,17 @@ if (import.meta.main) {
 	await Deno.writeTextFile(`bundle.js`, bundle);
 	console.info("Wrote bundle!");
 	console.info(`Committing bundle to git...`);
-	const sg = (await import("simple-git")).simpleGit()
+	const sg = (await import("simple-git")).simpleGit();
 	sg.add("bundle.js").commit(`chore: update bundle to ${id}`);
+	const timePrefix = [
+		startDate.getUTCMonth() + 1,
+		startDate.getUTCDate(),
+		startDate.getUTCFullYear(),
+		"_",
+		startDate.getUTCHours(),
+		startDate.getUTCMinutes()
+	].join("-");
+	sg.addTag(`${timePrefix}-${id}`);
 	console.info("Pushing bundle...");
 	sg.push();
 }
