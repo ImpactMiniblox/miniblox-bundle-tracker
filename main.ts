@@ -8,7 +8,6 @@ await init();
 export default async function getBundle() {
 	const page = await fetch("https://miniblox.io/");
 	const text = await page.text();
-	console.log(`Page text: ${text}`);
 	// <script type="module" crossorigin="" src="/assets/index-{randomCharacters}.js"></script>
 	// example: <script type="module" crossorigin src="/assets/index-CqJGkZPn.js"></script>
 	const regex = /\/assets\/index-([a-zA-Z0-9]+).js/gm;
