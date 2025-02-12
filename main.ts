@@ -2,6 +2,7 @@
 // Boring and I basically just pressed TAB to the AI completions because I don't care.
 
 import init, { format } from "@fmt/biome-fmt";
+import remap from "./remap.ts";
 
 const startDate = new Date();
 
@@ -32,6 +33,7 @@ export default async function getBundle() {
 if (import.meta.main) {
 	const [bundle, id] = await getBundle();
 	await Deno.writeTextFile(`bundle.js`, bundle);
+	await Deno.writeTextFile(`bundle-remapped.js`, remap(bundle));
 	console.info("Wrote bundle!");
 	console.info(`Committing bundle to git...`);
 	const sg = (await import("simple-git")).simpleGit();
