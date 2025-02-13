@@ -25,6 +25,7 @@ const REGEXES = {
 	boxGeometry: /w = new Mesh\(\n\t*new ([a-zA-Z]*)\(1, 1, 1\),/m,
 	// playerControllerMP
 	syncItem: /([a-zA-Z]*)\(\),\n\t*ClientSocket\.sendPacket/m,
+	gltfManager: /([a-zA-Z]*)("|'|`), new GLTFManager/,
 };
 
 // pasted from Llama 3.3 70B on DuckDuckGo
