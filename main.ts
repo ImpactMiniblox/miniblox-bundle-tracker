@@ -37,7 +37,10 @@ if (import.meta.main) {
 	console.info("Wrote bundle!");
 	console.info(`Committing bundle to git...`);
 	const sg = (await import("simple-git")).simpleGit();
-	sg.add("bundle.js").commit(`chore: update bundle to ${id}`);
+	sg
+		.add("bundle.js")
+		.add("bundle-remapped.js")
+		.commit(`chore: update bundle to ${id}`);
 	const timePrefix = [
 		startDate.getUTCMonth() + 1,
 		startDate.getUTCDate(),
