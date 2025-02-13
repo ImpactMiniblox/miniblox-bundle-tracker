@@ -7,7 +7,8 @@
  * And never made it not use such a brittle method of modifying such as replacing.
  * Later on when vector added the `jsContent` field to the bundle, it broke Vape for Miniblox entirely,
  * although that was probably way after Vape for Miniblox was discontinued or last updated.
- * Note that this isn't perfect, so it still can break, 
+ * Note that this isn't perfect, so it still can break.
+ * I've added multiple more regexes, I probably should add those to Vape for Miniblox.
 */
 
 const REGEXES = {
@@ -25,7 +26,9 @@ const REGEXES = {
 	boxGeometry: /w = new Mesh\(\n\t*new ([a-zA-Z]*)\(1, 1, 1\),/m,
 	// playerControllerMP
 	syncItem: /([a-zA-Z]*)\(\),\n\t*ClientSocket\.sendPacket/m,
+	// GLTF manager
 	gltfManager: /([a-zA-Z]*)("|'|`), new GLTFManager/,
+	loadModels: /loadTextures\(\),*\n\t*this\.[a-zA-Z]*\.([a-zA-Z]*)\(\)/m
 };
 
 // pasted from Llama 3.3 70B on DuckDuckGo
