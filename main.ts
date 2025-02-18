@@ -3,6 +3,7 @@
 
 import init, { format } from "@fmt/biome-fmt";
 import remap from "./remap.ts";
+import { DiffResult, simpleGit } from "simple-git";
 
 const startDate = new Date();
 
@@ -21,7 +22,9 @@ export default async function getBundle() {
 	const latestBundle = match[1];
 
 	// Download the latest bundle.
-	const bundle = await fetch(`https://miniblox.io/assets/index-${latestBundle}.js`);
+	const bundle = await fetch(
+		`https://miniblox.io/assets/index-${latestBundle}.js`,
+	);
 	const bundleText = await bundle.text();
 	console.info("Downloaded bundle! Formatting... (may take a while)");
 	console.time("Formatting");
@@ -30,26 +33,46 @@ export default async function getBundle() {
 	return [formattedText, latestBundle];
 }
 
+function isBoring(summary: DiffResult): [true, string] | [false] {
+	if (summary.deletions === summary.insertions) {
+		return [true, "deletion count == insertion count"];
+	}
+	if (summary.files.length == 1 && summary.files[0].file == "bundle.js") {
+		return [true, "only changed unmapped bundle"];
+	}
+	return [false];
+}
+
 if (import.meta.main) {
 	const [bundle, id] = await getBundle();
 	await Deno.writeTextFile(`bundle.js`, bundle);
 	await Deno.writeTextFile(`bundle-remapped.js`, remap(bundle));
 	console.info("Wrote bundle!");
 	console.info(`Committing bundle to git...`);
-	const sg = (await import("simple-git")).simpleGit();
+	const sg = simpleGit();
+	const diffSummary = await sg.diffSummary();
+	const [boring, boringReason] = isBoring(diffSummary);
+	if (boring)
+		console.info(`Bundle is boring (${boringReason}).`);
+
 	sg
 		.add("bundle.js")
 		.add("bundle-remapped.js")
-		.commit(`chore: update bundle to ${id}`);
+		.commit(
+			`chore: update bundle to ${id}${boring ? "[boring]" : ""}${
+				boringReason ? `\n(${boringReason})` : ""
+			}`,
+		);
 	const timePrefix = [
 		startDate.getUTCMonth() + 1,
 		startDate.getUTCDate(),
 		startDate.getUTCFullYear(),
 		"_",
 		startDate.getUTCHours(),
-		startDate.getUTCMinutes()
+		startDate.getUTCMinutes(),
 	].join("-");
 	sg.addTag(`${timePrefix}-${id}`);
 	console.info("Pushing bundle...");
 	sg.push();
+	sg.pushTags();
 }
