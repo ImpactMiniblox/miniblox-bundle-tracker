@@ -12,15 +12,12 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        deno-version: [vx.x.x, rc, canary]
     steps:
       - uses: actions/checkout@v4
         with:
             fetch-depth: 0
       - uses: denoland/setup-deno@v2
         with:
-            deno-version: ${{ matrix.deno-version }}
+            deno-version: canary
       - run: deno task run
       - run: git push
