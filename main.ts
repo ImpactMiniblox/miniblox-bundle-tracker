@@ -55,7 +55,7 @@ if (import.meta.main) {
 	if (boring)
 		console.info(`Bundle is boring (${boringReason}).`);
 
-	sg
+	await sg
 		.add("bundle.js")
 		.add("bundle-remapped.js")
 		.commit(
