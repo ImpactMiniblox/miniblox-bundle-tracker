@@ -28,6 +28,7 @@ const REGEXES = {
 	syncItem: /([a-zA-Z]*)\(\),\n\t*ClientSocket\.sendPacket/m,
 	// GLTF manager
 	gltfManager: /([a-zA-Z]*)("|'|`), new GLTFManager/,
+	AxisAlignedBoundingBox: /this\.boundingBox = new ([a-zA-Z]*)/m,
 	loadModels: /loadTextures\(\),*\n\t*this\.[a-zA-Z]*\.([a-zA-Z]*)\(\)/m,
 	// Shader Manager
 	addShaderToMaterialWorld: /ShaderManager\.([a-zA-Z]*)\(this\.materialWorld/,
