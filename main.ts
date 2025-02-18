@@ -72,7 +72,5 @@ if (import.meta.main) {
 		startDate.getUTCMinutes(),
 	].join("-");
 	sg.addTag(`${timePrefix}-${id}`);
-	console.info("Pushing bundle...");
-	sg.push();
 	sg.pushTags();
 }
