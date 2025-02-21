@@ -14,7 +14,7 @@ export default async function getBundle() {
 	const text = await page.text();
 	// <script type="module" crossorigin="" src="/assets/index-{randomCharacters}.js"></script>
 	// example: <script type="module" crossorigin src="/assets/index-CqJGkZPn.js"></script>
-	const regex = /\/assets\/index-([a-zA-Z0-9]+).js/gm;
+	const regex = /\/assets\/index-([^\.]+).js/gm;
 	const match = regex.exec(text);
 	if (!match) {
 		throw new Error("Couldn't find the latest bundle!");
@@ -28,8 +28,12 @@ export default async function getBundle() {
 	const bundleText = await bundle.text();
 	console.info("Downloaded bundle! Formatting... (may take a while)");
 	console.time("Formatting");
-	const formattedText = format(bundleText, "bundle.js");
+	let formattedText = format(bundleText, "bundle.js");
 	console.timeEnd("Formatting");
+	console.info("Removing useless jsContent variable (bloats & breaks diff)...");
+	const jsContentRegex = /const jsContent *= *['"](?:[^\\]|\\.)+['"] *$/m;
+	formattedText = formattedText.replace(jsContentRegex, "");
+	console.info("Done!");
 	return [formattedText, latestBundle];
 }
 
@@ -59,7 +63,7 @@ if (import.meta.main) {
 		.add("bundle.js")
 		.add("bundle-remapped.js")
 		.commit(
-			`chore: update bundle to ${id}${boring ? "[boring]" : ""}${
+			`chore: update bundle to ${id}${boring ? " [boring]" : ""}${
 				boringReason ? `\n(${boringReason})` : ""
 			}`,
 		);
