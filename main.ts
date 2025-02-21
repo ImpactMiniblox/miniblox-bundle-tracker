@@ -31,8 +31,8 @@ export default async function getBundle() {
 	let formattedText = format(bundleText, "bundle.js");
 	console.timeEnd("Formatting");
 	console.info("Removing useless jsContent variable (bloats & breaks diff)...");
-	const jsContentRegex = /const jsContent *= *['"](?:[^\\]|\\.)+['"] *$/m;
-	formattedText = formattedText.replace(jsContentRegex, "");
+	const jsContentRegex = /const jsContent =[\t\s]*['"](?:[^\\]|\\.)+['"] *$/m;
+	formattedText = formattedText.replace(jsContentRegex, "const ");
 	console.info("Done!");
 	return [formattedText, latestBundle];
 }
